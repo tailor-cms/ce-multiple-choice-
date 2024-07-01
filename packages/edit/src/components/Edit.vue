@@ -10,29 +10,32 @@
       variant="outlined"
       auto-grow
     />
-    <VTextField
-      v-for="(answer, index) in elementData.answers"
-      :key="answer.id"
-      :disabled="!isEditing"
-      :label="`Answer ${index + 1}`"
-      :model-value="answer.value"
-      :rules="[requiredRule]"
-      append-icon="mdi-close"
-      variant="outlined"
-      @click:append="removeAnswer(index)"
-      @update:model-value="updateAnswer($event, index)"
-    >
-      <template #prepend>
-        <VCheckbox
-          v-model="elementData.correct"
-          :rules="[requiredRule]"
-          :validation-value="!!elementData.correct.length!"
-          :value="answer.id"
-          hide-details
-          multiple
-        />
-      </template>
-    </VTextField>
+    <VSlideYTransition group>
+      <VTextField
+        v-for="(answer, index) in elementData.answers"
+        :key="answer.id"
+        :append-icon="elementData.answers.length > 2 ? 'mdi-close' : undefined"
+        :disabled="!isEditing"
+        :label="`Answer ${index + 1}`"
+        :model-value="answer.value"
+        :rules="[requiredRule]"
+        class="mb-2"
+        variant="outlined"
+        @click:append="removeAnswer(index)"
+        @update:model-value="updateAnswer($event, index)"
+      >
+        <template #prepend>
+          <VCheckbox
+            v-model="elementData.correct"
+            :rules="[requiredRule]"
+            :validation-value="!!elementData.correct.length!"
+            :value="answer.id"
+            hide-details
+            multiple
+          />
+        </template>
+      </VTextField>
+    </VSlideYTransition>
     <VBtn
       :disabled="!isEditing"
       prepend-icon="mdi-plus"
