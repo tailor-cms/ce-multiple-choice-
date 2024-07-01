@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import type {
   DataInitializer,
   ElementData,
@@ -13,7 +15,15 @@ export const name = 'Custom element';
 // Function which inits element state (data property on the Content Element
 // entity)
 // e.g. for simple counter component:
-export const initState: DataInitializer = (): ElementData => ({ count: 0 });
+export const initState: DataInitializer = (): ElementData => ({
+  question:
+    'What is the answer to the Ultimate Question of Life, the Universe, and Everything?',
+  answers: [
+    { id: uuidv4(), value: 'First answer' },
+    { id: uuidv4(), value: 'Second answer' },
+    { id: uuidv4(), value: 'Third answer' },
+  ],
+});
 
 // Can be loaded from package.json
 export const version = '1.0';

@@ -1,42 +1,78 @@
 <template>
   <div class="tce-container">
-    <div>This is Edit version of the content element id: {{ element?.id }}</div>
-    <div class="mt-6 mb-2">
-      Counter:
-      <span class="font-weight-bold">{{ element.data.count }}</span>
+    <VTextarea
+      v-model="elementData.question"
+      :disabled="!isEditing"
+      label="Question"
+      rows="3"
+      variant="outlined"
+      auto-grow
+    />
+    <VTextField
+      v-for="(answer, index) in elementData.answers"
+      :key="answer.id"
+      :disabled="!isEditing"
+      :label="`Answer ${index + 1}`"
+      :model-value="answer.value"
+      append-icon="mdi-close"
+      variant="outlined"
+      @click:append="removeAnswer(index)"
+      @update:model-value="updateAnswer($event, index)"
+    >
+      <template #prepend>
+        <VCheckboxBtn />
+      </template>
+    </VTextField>
+    <VBtn
+      :disabled="!isEditing"
+      prepend-icon="mdi-plus"
+      variant="text"
+      rounded
+      @click="addAnswer"
+    >
+      Add Answer
+    </VBtn>
+    <div class="d-flex justify-end">
+      <template v-if="isEditing">
+        <VBtn variant="text" @click="cancel">Cancel</VBtn>
+        <VBtn variant="tonal" @click="save">Save</VBtn>
+      </template>
+      <VBtn v-else variant="tonal" @click="isEditing = true">Edit</VBtn>
     </div>
-    <button @click="increment">Increment</button>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { defineEmits, defineProps } from 'vue';
-import { Element } from 'tce-manifest';
+import { defineEmits, defineProps, ref } from 'vue';
+import { Element, ElementData } from 'tce-manifest';
+import cloneDeep from 'lodash/cloneDeep';
+import { v4 as uuidv4 } from 'uuid';
 
 const emit = defineEmits(['save']);
 const props = defineProps<{ element: Element; isFocused: boolean }>();
 
-const increment = () => {
-  const { data } = props.element;
-  const count = data.count + 1;
-  emit('save', { ...data, count });
+const elementData = ref<ElementData>(cloneDeep(props.element.data));
+const isEditing = ref<boolean>(!props.element.id);
+
+const updateAnswer = (value: string, index: number) => {
+  Object.assign(elementData.value.answers[index], { value });
+};
+
+const removeAnswer = (index: number) => {
+  elementData.value.answers.splice(index, 1);
+};
+
+const addAnswer = () => {
+  elementData.value.answers.push({ id: uuidv4(), value: '' });
+};
+
+const save = () => {
+  emit('save', elementData.value);
+  isEditing.value = false;
+};
+
+const cancel = () => {
+  elementData.value = cloneDeep(props.element.data);
+  isEditing.value = false;
 };
 </script>
-
-<style scoped>
-.tce-container {
-  background-color: transparent;
-  margin-top: 1rem;
-  padding: 1.5rem;
-  border: 2px dashed #888;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 1rem;
-}
-
-button {
-  margin: 1rem 0 0 0;
-  padding: 0.25rem 1rem;
-  background-color: #eee;
-  border: 1px solid #444;
-}
-</style>
