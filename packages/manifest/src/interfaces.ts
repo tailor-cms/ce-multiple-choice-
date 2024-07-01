@@ -6,6 +6,7 @@ interface Answer {
 }
 export interface ElementData {
   question: string;
+  correct: string[];
   answers: Answer[];
 }
 

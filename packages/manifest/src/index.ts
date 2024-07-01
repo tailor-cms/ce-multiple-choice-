@@ -18,6 +18,7 @@ export const name = 'Custom element';
 export const initState: DataInitializer = (): ElementData => ({
   question:
     'What is the answer to the Ultimate Question of Life, the Universe, and Everything?',
+  correct: [],
   answers: [
     { id: uuidv4(), value: 'First answer' },
     { id: uuidv4(), value: 'Second answer' },
