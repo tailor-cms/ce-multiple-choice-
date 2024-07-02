@@ -4,7 +4,7 @@
       v-model="elementData.question"
       :disabled="!isEditing"
       :rules="[requiredRule]"
-      class="mb-4"
+      class="my-2"
       label="Question"
       rows="3"
       variant="outlined"
@@ -19,7 +19,7 @@
         :label="`Answer ${index + 1}`"
         :model-value="answer.value"
         :rules="[requiredRule]"
-        class="mb-2"
+        class="my-2"
         variant="outlined"
         @click:append="removeAnswer(index)"
         @update:model-value="updateAnswer($event, index)"
@@ -36,19 +36,22 @@
         </template>
       </VTextField>
     </VSlideYTransition>
-    <VBtn
-      :disabled="!isEditing"
-      prepend-icon="mdi-plus"
-      variant="text"
-      rounded
-      @click="addAnswer"
-    >
-      Add Answer
-    </VBtn>
+    <div class="d-flex justify-center align-center mb-2">
+      <VBtn
+        :disabled="!isEditing"
+        prepend-icon="mdi-plus"
+        size="small"
+        variant="text"
+        rounded
+        @click="addAnswer"
+      >
+        Add Answer
+      </VBtn>
+    </div>
     <div class="d-flex justify-end">
       <template v-if="isEditing">
         <VBtn variant="text" @click="cancel">Cancel</VBtn>
-        <VBtn type="submit" variant="tonal">Save</VBtn>
+        <VBtn class="ml-2" type="submit" variant="tonal">Save</VBtn>
       </template>
       <VBtn v-else variant="tonal" @click="isEditing = true">Edit</VBtn>
     </div>
