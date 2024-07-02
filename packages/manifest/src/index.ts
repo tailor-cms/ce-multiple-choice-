@@ -20,7 +20,7 @@ export const name = 'Custom element';
 export const initState: DataInitializer = (): ElementData => ({
   question:
     'What is the answer to the Ultimate Question of Life, the Universe, and Everything?',
-  correct: [],
+  correct: [uuid1],
   answers: {
     [uuid1]: 'First answer',
     [uuid2]: 'Second answer',
