@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 import type {
   DataInitializer,
@@ -19,11 +19,11 @@ export const initState: DataInitializer = (): ElementData => ({
   question:
     'What is the answer to the Ultimate Question of Life, the Universe, and Everything?',
   correct: [],
-  answers: [
-    { id: uuidv4(), value: 'First answer' },
-    { id: uuidv4(), value: 'Second answer' },
-    { id: uuidv4(), value: 'Third answer' },
-  ],
+  answers: {
+    [uuid()]: 'First answer',
+    [uuid()]: 'Second answer',
+    [uuid()]: 'Third answer',
+  },
 });
 
 // Can be loaded from package.json
@@ -32,7 +32,7 @@ export const version = '1.0';
 // UI configuration for Tailor CMS
 const ui = {
   // Display icon, https://pictogrammers.com/library/mdi/
-  icon: 'mdi-cube',
+  icon: 'mdi-order-mool-ascending-variant',
   // Does element support only full width or can be used within layouts
   // (e.g. 50/50 layout)
   forceFullWidth: true,

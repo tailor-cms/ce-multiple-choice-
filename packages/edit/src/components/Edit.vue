@@ -12,24 +12,24 @@
     />
     <VSlideYTransition group>
       <VTextField
-        v-for="(answer, index) in elementData.answers"
-        :key="answer.id"
-        :append-icon="elementData.answers.length > 2 ? 'mdi-close' : undefined"
+        v-for="(answer, id, index) in elementData.answers"
+        :key="id"
+        :append-icon="answersCount > 2 ? 'mdi-close' : undefined"
         :disabled="!isEditing"
         :label="`Answer ${index + 1}`"
-        :model-value="answer.value"
+        :model-value="answer"
         :rules="[requiredRule]"
         class="my-2"
         variant="outlined"
-        @click:append="removeAnswer(index)"
-        @update:model-value="updateAnswer($event, index)"
+        @click:append="removeAnswer(id)"
+        @update:model-value="updateAnswer(id, $event)"
       >
         <template #prepend>
           <VCheckbox
             v-model="elementData.correct"
             :rules="[requiredRule]"
             :validation-value="!!elementData.correct.length!"
-            :value="answer.id"
+            :value="id"
             hide-details
             multiple
           />
@@ -59,40 +59,36 @@
 </template>
 
 <script lang="ts" setup>
-import { defineEmits, defineProps, ref } from 'vue';
+import { computed, defineEmits, defineProps, reactive, ref } from 'vue';
 import { Element, ElementData } from 'tce-manifest';
 import cloneDeep from 'lodash/cloneDeep';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuid } from 'uuid';
 
 const emit = defineEmits(['save']);
 const props = defineProps<{ element: Element; isFocused: boolean }>();
 
-const form = ref();
-const elementData = ref<ElementData>(cloneDeep(props.element.data));
+const form = ref<HTMLFormElement>();
 const isEditing = ref<boolean>(!props.element.id);
+const elementData = reactive<ElementData>(cloneDeep(props.element.data));
 
-const updateAnswer = (value: string, index: number) => {
-  Object.assign(elementData.value.answers[index], { value });
-};
+const answersCount = computed(() => Object.keys(elementData.answers).length);
 
-const removeAnswer = (index: number) => {
-  elementData.value.answers.splice(index, 1);
-};
-
-const addAnswer = () => {
-  elementData.value.answers.push({ id: uuidv4(), value: '' });
-};
+const addAnswer = () => (elementData.answers[uuid()] = '');
+const removeAnswer = (id: string) => delete elementData.answers[id];
+const updateAnswer = (id: string, value: string) =>
+  (elementData.answers[id] = value);
 
 const save = async () => {
-  const { valid } = await form.value.validate();
-  if (!valid) return;
-  emit('save', elementData.value);
-  isEditing.value = false;
+  const { valid } = await form.value?.validate();
+  if (valid) {
+    emit('save', elementData);
+    isEditing.value = false;
+  }
 };
 
 const cancel = () => {
-  elementData.value = cloneDeep(props.element.data);
-  form.value.resetValidation();
+  Object.assign(elementData, cloneDeep(props.element.data));
+  form.value?.resetValidation();
   isEditing.value = false;
 };
 

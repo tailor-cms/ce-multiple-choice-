@@ -1,13 +1,9 @@
 // Example counter component
 
-interface Answer {
-  id: string;
-  value: string;
-}
 export interface ElementData {
   question: string;
   correct: string[];
-  answers: Answer[];
+  answers: Record<string, string>;
 }
 
 export interface Element {
