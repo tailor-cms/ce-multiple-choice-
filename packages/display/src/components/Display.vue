@@ -1,15 +1,30 @@
 <template>
   <div class="tce-root">
-    <p>This is the Display version of the content element id: {{ id }}</p>
-    <div class="mt-6 mb-2">
-      Counter:
-      <span class="font-weight-bold">{{ data.count }}</span>
-    </div>
-    <v-btn class="my-6" @click="submit">Update user state</v-btn>
-    <div>
-      <div class="mb-1 text-subtitle-2">User state:</div>
-      <pre class="text-body-2">{{ userState }}</pre>
-    </div>
+    <div class="px-2">{{ data.question }}</div>
+    <VList bg-color="transparent" rounded="lg" select-strategy="leaf">
+      <VListItem
+        v-for="(item, uuid, index) in data.answers"
+        :key="uuid"
+        :value="uuid"
+        base-color="blue-grey"
+        class="pa-3 ma-2"
+        rounded="lg"
+        variant="tonal"
+      >
+        <template #prepend="{ isSelected }">
+          <VAvatar
+            :class="{ 'font-weight-bold': isSelected }"
+            :variant="isSelected ? 'flat' : 'outlined'"
+            color="blue-grey"
+            rounded="lg"
+            size="small"
+          >
+            {{ index + 1 }}
+          </VAvatar>
+        </template>
+        <VListItemTitle>{{ item }}</VListItemTitle>
+      </VListItem>
+    </VList>
   </div>
 </template>
 
@@ -24,10 +39,6 @@ const submit = () => emit('interaction', { id: props.id });
 
 <style scoped>
 .tce-root {
-  background-color: transparent;
-  margin-top: 1rem;
-  padding: 1.25rem;
-  border: 2px dashed #888;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 1rem;
 }
