@@ -1,40 +1,76 @@
 <template>
-  <div class="tce-root">
+  <VForm ref="form" class="tce-root" @submit.prevent="submit">
     <div class="px-2">{{ data.question }}</div>
-    <VList bg-color="transparent" rounded="lg" select-strategy="leaf">
-      <VListItem
-        v-for="(item, uuid, index) in data.answers"
-        :key="uuid"
-        :value="uuid"
-        base-color="blue-grey"
-        class="pa-3 ma-2"
+    <VInput
+      :rules="[requiredRule]"
+      :validation-value="selectedAnswer.length"
+      validate-on="submit"
+    >
+      <VList
+        v-model:selected="selectedAnswer"
+        bg-color="transparent"
+        class="w-100"
         rounded="lg"
-        variant="tonal"
+        select-strategy="leaf"
+        @update:selected="selectedAnswer"
       >
-        <template #prepend="{ isSelected }">
-          <VAvatar
-            :class="{ 'font-weight-bold': isSelected }"
-            :variant="isSelected ? 'flat' : 'outlined'"
-            color="blue-grey"
-            rounded="lg"
-            size="small"
-          >
-            {{ index + 1 }}
-          </VAvatar>
-        </template>
-        <VListItemTitle>{{ item }}</VListItemTitle>
-      </VListItem>
-    </VList>
-  </div>
+        <VListItem
+          v-for="(item, uuid, index) in data.answers"
+          :key="uuid"
+          :value="uuid"
+          base-color="blue-grey"
+          class="pa-3 mt-2"
+          rounded="lg"
+          variant="tonal"
+        >
+          <template #prepend="{ isSelected }">
+            <VAvatar
+              :class="{ 'font-weight-bold': isSelected }"
+              :variant="isSelected ? 'flat' : 'outlined'"
+              color="blue-grey"
+              rounded="lg"
+              size="small"
+            >
+              {{ index + 1 }}
+            </VAvatar>
+          </template>
+          <VListItemTitle>{{ item }}</VListItemTitle>
+        </VListItem>
+      </VList>
+    </VInput>
+    <div v-if="!submitted" class="d-flex justify-end">
+      <VBtn type="submit" variant="tonal">Submit</VBtn>
+    </div>
+  </VForm>
 </template>
 
 <script setup lang="ts">
+import { computed, ref, watch } from 'vue';
 import { ElementData } from 'tce-manifest';
 
 const props = defineProps<{ id: number; data: ElementData; userState: any }>();
 const emit = defineEmits(['interaction']);
 
-const submit = () => emit('interaction', { id: props.id });
+const form = ref<HTMLFormElement>();
+const selectedAnswer = ref<string[]>(props.userState?.response ?? []);
+
+const submitted = computed(() => !!props.userState?.state);
+
+const submit = async () => {
+  const { valid } = await form.value?.validate();
+  if (valid) {
+    emit('interaction', { state: selectedAnswer.value });
+  }
+};
+
+const requiredRule = (val: string | boolean | number) => {
+  return !!val || 'You have to select an answer.';
+};
+
+watch(
+  () => props.userState.state,
+  (state) => (selectedAnswer.value = state),
+);
 </script>
 
 <style scoped>

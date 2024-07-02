@@ -6,6 +6,8 @@ import type {
   ElementManifest,
 } from './interfaces';
 
+const [uuid1, uuid2, uuid3] = Array.from({ length: 3 }, () => uuid());
+
 // Element unique id within the target system (e.g. Tailor)
 export const type = 'ORG_CUSTOM_ELEMENT';
 
@@ -20,9 +22,9 @@ export const initState: DataInitializer = (): ElementData => ({
     'What is the answer to the Ultimate Question of Life, the Universe, and Everything?',
   correct: [],
   answers: {
-    [uuid()]: 'First answer',
-    [uuid()]: 'Second answer',
-    [uuid()]: 'Third answer',
+    [uuid1]: 'First answer',
+    [uuid2]: 'Second answer',
+    [uuid3]: 'Third answer',
   },
 });
 
@@ -40,8 +42,8 @@ const ui = {
 
 export const mocks = {
   displayContexts: [
-    { name: 'Test preset 1', data: { state: 'I have a value' } },
-    { name: 'Test preset 2', data: { state: 'I have a different value' } },
+    { name: 'No selection', data: {} },
+    { name: 'Two selected answers', data: { state: [uuid2, uuid3] } },
   ],
 };
 
