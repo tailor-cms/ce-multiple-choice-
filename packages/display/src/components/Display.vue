@@ -34,6 +34,9 @@
               {{ index + 1 }}
             </VAvatar>
           </template>
+          <template v-if="submitted" #append="{ isSelected }">
+            <VIcon v-bind="iconProps(isSelected, uuid)" />
+          </template>
           <VListItemTitle>{{ item }}</VListItemTitle>
         </VListItem>
       </VList>
@@ -52,7 +55,7 @@ const props = defineProps<{ id: number; data: ElementData; userState: any }>();
 const emit = defineEmits(['interaction']);
 
 const form = ref<HTMLFormElement>();
-const selectedAnswer = ref<string[]>(props.userState?.response ?? []);
+const selectedAnswer = ref<string[]>(props.userState?.state ?? []);
 
 const submitted = computed(() => !!props.userState?.state);
 
@@ -65,6 +68,13 @@ const submit = async () => {
 
 const requiredRule = (val: string | boolean | number) => {
   return !!val || 'You have to select an answer.';
+};
+
+const iconProps = (isSelected: boolean, uuid: string) => {
+  const isAnswer = props.data.correct.includes(uuid);
+  const isCorrect = (isSelected && isAnswer) || (!isSelected && !isAnswer);
+  if (isCorrect) return { icon: 'mdi-check-circle', color: 'success' };
+  return { icon: 'mdi-close-circle', color: 'error' };
 };
 
 watch(
