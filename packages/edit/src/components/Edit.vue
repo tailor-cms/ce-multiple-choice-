@@ -59,7 +59,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineEmits, defineProps, reactive, ref } from 'vue';
+import { computed, defineEmits, defineProps, reactive, ref, watch } from 'vue';
 import { Element, ElementData } from 'tce-manifest';
 import cloneDeep from 'lodash/cloneDeep';
 import { v4 as uuid } from 'uuid';
@@ -95,4 +95,9 @@ const cancel = () => {
 const requiredRule = (val: string | boolean | number) => {
   return !!val || 'The field is required';
 };
+
+watch(
+  () => props.element.data,
+  (data) => Object.assign(elementData, cloneDeep(data)),
+);
 </script>
