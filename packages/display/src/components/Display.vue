@@ -47,29 +47,31 @@
         </VItem>
       </VItemGroup>
     </VInput>
-    <div v-if="!submitted" class="d-flex justify-end">
-      <VBtn type="submit" variant="tonal">Submit</VBtn>
-    </div>
     <VAlert
-      v-else
+      v-if="submitted"
       :text="userState?.isCorrect ? 'Correct' : 'Incorrect'"
       :type="userState?.isCorrect ? 'success' : 'error'"
+      class="mb-3"
+      rounded="lg"
       variant="tonal"
     />
+    <div class="d-flex justify-end">
+      <VBtn v-if="!submitted" type="submit" variant="tonal">Submit</VBtn>
+      <VBtn v-else variant="tonal" @click="submitted = false">Try Again</VBtn>
+    </div>
   </VForm>
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { ElementData } from 'tce-manifest';
 
 const props = defineProps<{ id: number; data: ElementData; userState: any }>();
 const emit = defineEmits(['interaction']);
 
 const form = ref<HTMLFormElement>();
+const submitted = ref('isCorrect' in (props.userState ?? {}));
 const selectedAnswer = ref<string[]>(props.userState?.response ?? []);
-
-const submitted = computed(() => 'isCorrect' in (props.userState ?? {}));
 
 const submit = async () => {
   const { valid } = await form.value?.validate();
@@ -89,8 +91,12 @@ const iconProps = (uuid: string) => {
 };
 
 watch(
-  () => props.userState?.response,
-  (response) => (selectedAnswer.value = response || []),
+  () => props.userState,
+  (state = {}) => {
+    selectedAnswer.value = state.response || [];
+    submitted.value = 'isCorrect' in state;
+  },
+  { deep: true },
 );
 </script>
 
