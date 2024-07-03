@@ -41,10 +41,7 @@ const ui = {
 };
 
 export const mocks = {
-  displayContexts: [
-    { name: 'No selection', data: {} },
-    { name: 'Two selected answers', data: { state: [uuid2, uuid3] } },
-  ],
+  displayContexts: [{ name: 'No selection', data: {} }],
 };
 
 const manifest: ElementManifest = {
