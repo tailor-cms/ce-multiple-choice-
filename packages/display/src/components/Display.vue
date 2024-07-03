@@ -1,49 +1,61 @@
 <template>
   <VForm ref="form" class="tce-root" @submit.prevent="submit">
-    <div class="px-2">{{ data.question }}</div>
+    <div class="px-2 my-4">{{ data.question }}</div>
     <VInput
       :rules="[requiredRule]"
       :validation-value="selectedAnswer.length"
+      hide-details="auto"
       validate-on="submit"
     >
-      <VList
-        v-model:selected="selectedAnswer"
-        bg-color="transparent"
+      <VItemGroup
+        v-model="selectedAnswer"
         class="w-100"
-        rounded="lg"
-        select-strategy="leaf"
-        @update:selected="selectedAnswer"
+        selected-class="bg-blue-grey-lighten-4"
+        multiple
       >
-        <VListItem
+        <VItem
           v-for="(item, uuid, index) in data.answers"
           :key="uuid"
+          v-slot="{ toggle, isSelected, selectedClass }"
           :value="uuid"
-          base-color="blue-grey"
-          class="pa-3 mt-2"
-          rounded="lg"
-          variant="tonal"
         >
-          <template #prepend="{ isSelected }">
+          <VCard
+            :class="selectedClass"
+            :disabled="submitted"
+            class="d-flex align-center px-4 py-3 mb-3"
+            color="blue-grey-darken-2"
+            rounded="lg"
+            variant="outlined"
+            @click="toggle"
+          >
             <VAvatar
               :class="{ 'font-weight-bold': isSelected }"
               :variant="isSelected ? 'flat' : 'outlined'"
-              color="blue-grey"
+              class="mr-4"
+              color="blue-grey-darken-2"
               rounded="lg"
               size="small"
             >
               {{ index + 1 }}
             </VAvatar>
-          </template>
-          <template v-if="submitted" #append="{ isSelected }">
-            <VIcon v-bind="iconProps(isSelected, uuid)" />
-          </template>
-          <VListItemTitle>{{ item }}</VListItemTitle>
-        </VListItem>
-      </VList>
+            {{ item }}
+            <VSpacer />
+            <template v-if="submitted">
+              <VIcon v-if="isSelected" v-bind="iconProps(uuid)" />
+            </template>
+          </VCard>
+        </VItem>
+      </VItemGroup>
     </VInput>
     <div v-if="!submitted" class="d-flex justify-end">
       <VBtn type="submit" variant="tonal">Submit</VBtn>
     </div>
+    <VAlert
+      v-else
+      :text="userState.isCorrect ? 'Correct' : 'Incorrect'"
+      :type="userState.isCorrect ? 'success' : 'error'"
+      variant="tonal"
+    />
   </VForm>
 </template>
 
@@ -55,14 +67,14 @@ const props = defineProps<{ id: number; data: ElementData; userState: any }>();
 const emit = defineEmits(['interaction']);
 
 const form = ref<HTMLFormElement>();
-const selectedAnswer = ref<string[]>(props.userState?.state ?? []);
+const selectedAnswer = ref<string[]>(props.userState?.response ?? []);
 
-const submitted = computed(() => !!props.userState?.state);
+const submitted = computed(() => 'isCorrect' in (props.userState ?? {}));
 
 const submit = async () => {
   const { valid } = await form.value?.validate();
   if (valid) {
-    emit('interaction', { state: selectedAnswer.value });
+    emit('interaction', { response: selectedAnswer.value });
   }
 };
 
@@ -70,16 +82,15 @@ const requiredRule = (val: string | boolean | number) => {
   return !!val || 'You have to select an answer.';
 };
 
-const iconProps = (isSelected: boolean, uuid: string) => {
-  const isAnswer = props.data.correct.includes(uuid);
-  const isCorrect = (isSelected && isAnswer) || (!isSelected && !isAnswer);
+const iconProps = (uuid: string) => {
+  const isCorrect = props.data.correct.includes(uuid);
   if (isCorrect) return { icon: 'mdi-check-circle', color: 'success' };
   return { icon: 'mdi-close-circle', color: 'error' };
 };
 
 watch(
-  () => props.userState.state,
-  (state) => (selectedAnswer.value = state),
+  () => props.userState?.response,
+  (response) => (selectedAnswer.value = response),
 );
 </script>
 
