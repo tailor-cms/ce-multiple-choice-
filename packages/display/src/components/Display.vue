@@ -3,7 +3,7 @@
     <div class="px-2 my-4">{{ data.question }}</div>
     <VInput
       :rules="[requiredRule]"
-      :validation-value="selectedAnswer.length"
+      :validation-value="selectedAnswer.length != 0"
       hide-details="auto"
       validate-on="submit"
     >
@@ -52,8 +52,8 @@
     </div>
     <VAlert
       v-else
-      :text="userState.isCorrect ? 'Correct' : 'Incorrect'"
-      :type="userState.isCorrect ? 'success' : 'error'"
+      :text="userState?.isCorrect ? 'Correct' : 'Incorrect'"
+      :type="userState?.isCorrect ? 'success' : 'error'"
       variant="tonal"
     />
   </VForm>
@@ -83,14 +83,14 @@ const requiredRule = (val: string | boolean | number) => {
 };
 
 const iconProps = (uuid: string) => {
-  const isCorrect = props.data.correct.includes(uuid);
+  const isCorrect = props.userState?.correct.includes(uuid);
   if (isCorrect) return { icon: 'mdi-check-circle', color: 'success' };
   return { icon: 'mdi-close-circle', color: 'error' };
 };
 
 watch(
   () => props.userState?.response,
-  (response) => (selectedAnswer.value = response),
+  (response) => (selectedAnswer.value = response || []),
 );
 </script>
 

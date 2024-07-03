@@ -44,7 +44,7 @@ export function afterRetrieve(
 export function beforeDisplay(element: Element, context: any) {
   console.log('beforeDisplay hook');
   console.log('beforeDisplay context', context);
-  return { ...context, ...USER_STATE };
+  return { ...context, ...USER_STATE, correct: element.data.correct };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
