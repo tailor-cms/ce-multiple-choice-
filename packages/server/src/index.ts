@@ -1,6 +1,10 @@
 import type { HookServices, ServerRuntime } from '@tailor-cms/cek-common';
-import { initState, mocks, type } from 'tce-manifest';
-import type { Element } from 'tce-manifest';
+import {
+  initState,
+  mocks,
+  type,
+} from '@tailor-cms/ce-multiple-choice-manifest';
+import type { Element } from '@tailor-cms/ce-multiple-choice-manifest';
 import omit from 'lodash/omit';
 import xor from 'lodash/xor';
 
