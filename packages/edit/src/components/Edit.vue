@@ -30,6 +30,7 @@
             :rules="[requiredRule]"
             :validation-value="!!elementData.correct.length!"
             :value="id"
+            color="primary"
             hide-details
             multiple
           />
@@ -101,3 +102,9 @@ watch(
   (data) => Object.assign(elementData, cloneDeep(data)),
 );
 </script>
+
+<style lang="scss" scoped>
+.tce-container {
+  text-align: left;
+}
+</style>
