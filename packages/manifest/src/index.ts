@@ -1,8 +1,12 @@
+import { v4 as uuid } from 'uuid';
+
 import type {
   DataInitializer,
   ElementData,
   ElementManifest,
 } from './interfaces';
+
+const [uuid1, uuid2, uuid3] = Array.from({ length: 3 }, () => uuid());
 
 // Element unique id within the target system (e.g. Tailor)
 export const type = 'ORG_CUSTOM_ELEMENT';
@@ -13,7 +17,16 @@ export const name = 'Custom element';
 // Function which inits element state (data property on the Content Element
 // entity)
 // e.g. for simple counter component:
-export const initState: DataInitializer = (): ElementData => ({ count: 0 });
+export const initState: DataInitializer = (): ElementData => ({
+  question:
+    'What is the answer to the Ultimate Question of Life, the Universe, and Everything?',
+  correct: [uuid1],
+  answers: {
+    [uuid1]: 'First answer',
+    [uuid2]: 'Second answer',
+    [uuid3]: 'Third answer',
+  },
+});
 
 // Can be loaded from package.json
 export const version = '1.0';
@@ -21,17 +34,14 @@ export const version = '1.0';
 // UI configuration for Tailor CMS
 const ui = {
   // Display icon, https://pictogrammers.com/library/mdi/
-  icon: 'mdi-cube',
+  icon: 'mdi-order-mool-ascending-variant',
   // Does element support only full width or can be used within layouts
   // (e.g. 50/50 layout)
   forceFullWidth: true,
 };
 
 export const mocks = {
-  displayContexts: [
-    { name: 'Test preset 1', data: { state: 'I have a value' } },
-    { name: 'Test preset 2', data: { state: 'I have a different value' } },
-  ],
+  displayContexts: [{ name: 'No selection', data: {} }],
 };
 
 const manifest: ElementManifest = {

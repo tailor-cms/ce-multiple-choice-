@@ -24,6 +24,7 @@
   "devDependencies": {
     "@tailor-cms/cek-common": "^0.0.3",
     "@tailor-cms/eslint-config": "0.0.2",
+    "@types/lodash": "^4.17.6",
     "tce-manifest": "workspace:*",
     "tsup": "^7.2.0",
     "typescript": "^5.1.6"
@@ -44,5 +45,8 @@
     "minify": false,
     "clean": false,
     "dts": true
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
   }
 }
