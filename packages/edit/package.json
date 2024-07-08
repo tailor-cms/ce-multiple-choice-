@@ -1,6 +1,7 @@
 {
-  "name": "tce-edit",
-  "private": true,
+  "name": "@tailor-cms/ce-multiple-choice-edit",
+  "description": "Tailor CMS multiple choice authoring component",
+  "author": "Studion <info@gostudion.com> (https://github.com/tailor-cms)",
   "type": "module",
   "version": "0.0.1",
   "exports": {
@@ -23,19 +24,20 @@
     "vue": "^3.3.4"
   },
   "devDependencies": {
+    "@tailor-cms/ce-multiple-choice-manifest": "workspace:*",
     "@tailor-cms/eslint-config": "0.0.2",
     "@types/lodash": "^4.17.6",
     "@types/uuid": "^10.0.0",
     "@vitejs/plugin-vue": "^4.2.3",
-    "tce-manifest": "workspace:*",
     "typescript": "^5.1.6",
     "vite": "^4.4.5",
     "vue-tsc": "^1.8.5"
   },
-  "description": "Tailor multiple choice element",
-  "author": "Studion <info@gostudion.com> (https://github.com/tailor-cms)",
   "dependencies": {
     "lodash": "^4.17.21",
     "uuid": "^10.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
