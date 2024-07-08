@@ -64,7 +64,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { ElementData } from 'tce-manifest';
+import { ElementData } from '@tailor-cms/ce-multiple-choice-manifest';
 
 const props = defineProps<{ id: number; data: ElementData; userState: any }>();
 const emit = defineEmits(['interaction']);

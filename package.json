@@ -1,8 +1,8 @@
 {
-  "name": "ce-multiple-choice",
-  "description": "Tailor multiple choice element",
-  "version": "0.0.1",
+  "name": "@tailor-cms/ce-multiple-choice",
+  "description": "Tailor CMS multiple choice element",
   "author": "Studion <info@gostudion.com> (https://github.com/tailor-cms)",
+  "version": "0.0.1",
   "type": "module",
   "exports": {
     "./edit": {

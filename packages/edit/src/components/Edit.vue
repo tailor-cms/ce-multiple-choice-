@@ -60,7 +60,7 @@
 
 <script lang="ts" setup>
 import { computed, defineEmits, defineProps, reactive, ref, watch } from 'vue';
-import { Element, ElementData } from 'tce-manifest';
+import { Element, ElementData } from '@tailor-cms/ce-multiple-choice-manifest';
 import cloneDeep from 'lodash/cloneDeep';
 import { v4 as uuid } from 'uuid';
 

@@ -1,6 +1,6 @@
 {
-  "name": "tce-manifest",
-  "description": "Tailor multiple choice element",
+  "name": "@tailor-cms/ce-multiple-choice-manifest",
+  "description": "Tailor CMS multiple choice manifest",
   "author": "Studion <info@gostudion.com> (https://github.com/tailor-cms)",
   "type": "module",
   "version": "0.0.1",
@@ -46,5 +46,8 @@
   },
   "dependencies": {
     "uuid": "^10.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
