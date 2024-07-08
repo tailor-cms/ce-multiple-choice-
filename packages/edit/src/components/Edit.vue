@@ -4,7 +4,7 @@
       v-model="elementData.question"
       :disabled="!isEditing"
       :rules="[requiredRule]"
-      class="my-2"
+      class="my-3"
       label="Question"
       rows="3"
       variant="outlined"
@@ -19,7 +19,7 @@
         :label="`Answer ${index + 1}`"
         :model-value="answer"
         :rules="[requiredRule]"
-        class="my-2"
+        class="my-3"
         variant="outlined"
         @click:append="removeAnswer(id)"
         @update:model-value="updateAnswer(id, $event)"
@@ -30,6 +30,7 @@
             :rules="[requiredRule]"
             :validation-value="!!elementData.correct.length!"
             :value="id"
+            color="primary"
             hide-details
             multiple
           />
@@ -101,3 +102,9 @@ watch(
   (data) => Object.assign(elementData, cloneDeep(data)),
 );
 </script>
+
+<style lang="scss" scoped>
+.tce-container {
+  text-align: left;
+}
+</style>
