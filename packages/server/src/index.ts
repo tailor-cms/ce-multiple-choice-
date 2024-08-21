@@ -5,8 +5,8 @@ import {
   type,
 } from '@tailor-cms/ce-multiple-choice-manifest';
 import type { Element } from '@tailor-cms/ce-multiple-choice-manifest';
-import omit from 'lodash/omit';
-import xor from 'lodash/xor';
+import omit from 'lodash/omit.js';
+import xor from 'lodash/xor.js';
 
 // Detect if hooks are running in CEK (used for mocking end-system runtime)
 const IS_CEK = process.env.CEK_RUNTIME;
