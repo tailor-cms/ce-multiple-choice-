@@ -27,6 +27,7 @@
         <template #prepend>
           <VCheckbox
             v-model="elementData.correct"
+            :disabled="isDisabled || !isEditing"
             :rules="[requiredRule]"
             :validation-value="!!elementData.correct.length!"
             :value="id"
