@@ -1,5 +1,11 @@
 # @tailor-cms/ce-multiple-choice-server
 
+## 0.0.6
+
+### Patch Changes
+
+- Add disabled state
+
 ## 0.0.5
 
 ### Patch Changes
