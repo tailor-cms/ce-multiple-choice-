@@ -14,14 +14,12 @@
       <VTextField
         v-for="(answer, id, index) in elementData.answers"
         :key="id"
-        :append-icon="answersCount > 2 ? 'mdi-close' : undefined"
         :disabled="isDisabled || !isEditing"
         :label="`Answer ${index + 1}`"
         :model-value="answer"
         :rules="[requiredRule]"
         class="my-3"
         variant="outlined"
-        @click:append="removeAnswer(id)"
         @update:model-value="updateAnswer(id, $event)"
       >
         <template #prepend>
@@ -34,6 +32,17 @@
             color="primary"
             hide-details
             multiple
+          />
+        </template>
+        <template #append>
+          <VBtn
+            v-if="answersCount > 2"
+            :disabled="isDisabled || !isEditing"
+            aria-label="Remove answer"
+            density="comfortable"
+            icon="mdi-close"
+            variant="text"
+            @click="removeAnswer(id)"
           />
         </template>
       </VTextField>
