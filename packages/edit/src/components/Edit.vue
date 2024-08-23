@@ -2,7 +2,7 @@
   <VForm ref="form" class="tce-container" @submit.prevent="save">
     <VTextarea
       v-model="elementData.question"
-      :disabled="!isEditing"
+      :disabled="isDisabled || !isEditing"
       :rules="[requiredRule]"
       class="my-3"
       label="Question"
@@ -15,7 +15,7 @@
         v-for="(answer, id, index) in elementData.answers"
         :key="id"
         :append-icon="answersCount > 2 ? 'mdi-close' : undefined"
-        :disabled="!isEditing"
+        :disabled="isDisabled || !isEditing"
         :label="`Answer ${index + 1}`"
         :model-value="answer"
         :rules="[requiredRule]"
@@ -39,7 +39,7 @@
     </VSlideYTransition>
     <div class="d-flex justify-center align-center mb-2">
       <VBtn
-        :disabled="!isEditing"
+        :disabled="isDisabled || !isEditing"
         prepend-icon="mdi-plus"
         size="small"
         variant="text"
@@ -49,7 +49,7 @@
         Add Answer
       </VBtn>
     </div>
-    <div class="d-flex justify-end">
+    <div v-if="!isDisabled" class="d-flex justify-end">
       <template v-if="isEditing">
         <VBtn variant="text" @click="cancel">Cancel</VBtn>
         <VBtn class="ml-2" type="submit" variant="tonal">Save</VBtn>
@@ -66,7 +66,11 @@ import cloneDeep from 'lodash/cloneDeep';
 import { v4 as uuid } from 'uuid';
 
 const emit = defineEmits(['save']);
-const props = defineProps<{ element: Element; isFocused: boolean }>();
+const props = defineProps<{
+  element: Element;
+  isFocused: boolean;
+  isDisabled: boolean;
+}>();
 
 const form = ref<HTMLFormElement>();
 const isEditing = ref<boolean>(!props.element.id);
