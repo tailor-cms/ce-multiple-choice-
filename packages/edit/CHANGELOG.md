@@ -1,5 +1,11 @@
 # @tailor-cms/ce-multiple-choice-edit
 
+## 0.0.7
+
+### Patch Changes
+
+- Fix disabled state
+
 ## 0.0.6
 
 ### Patch Changes
