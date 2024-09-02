@@ -1,5 +1,11 @@
 # @tailor-cms/ce-multiple-choice-server
 
+## 0.0.8
+
+### Patch Changes
+
+- Refactor editina and disabled states
+
 ## 0.0.7
 
 ### Patch Changes
