@@ -1,5 +1,11 @@
 # @tailor-cms/ce-multiple-choice-server
 
+## 0.0.9
+
+### Patch Changes
+
+- Remove switch
+
 ## 0.0.8
 
 ### Patch Changes
