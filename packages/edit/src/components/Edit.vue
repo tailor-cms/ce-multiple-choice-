@@ -5,7 +5,6 @@
     validate-on="submit"
     @submit.prevent="save"
   >
-    <VSwitch v-model="isDisabled" class="mb-3" label="Edit" />
     <VTextarea
       v-model="elementData.question"
       :readonly="isDisabled"
