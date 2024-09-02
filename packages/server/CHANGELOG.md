@@ -1,5 +1,11 @@
 # @tailor-cms/ce-multiple-choice-server
 
+## 0.0.10
+
+### Patch Changes
+
+- Publish dist
+
 ## 0.0.9
 
 ### Patch Changes
