@@ -1,8 +1,14 @@
 <template>
-  <VForm ref="form" class="tce-container" @submit.prevent="save">
+  <VForm
+    ref="form"
+    class="tce-container"
+    validate-on="submit"
+    @submit.prevent="save"
+  >
+    <VSwitch v-model="isDisabled" class="mb-3" label="Edit" />
     <VTextarea
       v-model="elementData.question"
-      :disabled="isDisabled || !isEditing"
+      :readonly="isDisabled"
       :rules="[requiredRule]"
       class="my-3"
       label="Question"
@@ -14,9 +20,9 @@
       <VTextField
         v-for="(answer, id, index) in elementData.answers"
         :key="id"
-        :disabled="isDisabled || !isEditing"
         :label="`Answer ${index + 1}`"
         :model-value="answer"
+        :readonly="isDisabled"
         :rules="[requiredRule]"
         class="my-3"
         variant="outlined"
@@ -25,7 +31,7 @@
         <template #prepend>
           <VCheckbox
             v-model="elementData.correct"
-            :disabled="isDisabled || !isEditing"
+            :readonly="isDisabled"
             :rules="[requiredRule]"
             :validation-value="!!elementData.correct.length!"
             :value="id"
@@ -36,8 +42,7 @@
         </template>
         <template #append>
           <VBtn
-            v-if="answersCount > 2"
-            :disabled="isDisabled || !isEditing"
+            v-if="!isDisabled && answersCount > 2"
             aria-label="Remove answer"
             density="comfortable"
             icon="mdi-close"
@@ -49,7 +54,7 @@
     </VSlideYTransition>
     <div class="d-flex justify-center align-center mb-2">
       <VBtn
-        :disabled="isDisabled || !isEditing"
+        v-if="!isDisabled"
         prepend-icon="mdi-plus"
         size="small"
         variant="text"
@@ -60,11 +65,10 @@
       </VBtn>
     </div>
     <div v-if="!isDisabled" class="d-flex justify-end">
-      <template v-if="isEditing">
-        <VBtn variant="text" @click="cancel">Cancel</VBtn>
-        <VBtn class="ml-2" type="submit" variant="tonal">Save</VBtn>
-      </template>
-      <VBtn v-else variant="tonal" @click="isEditing = true">Edit</VBtn>
+      <VBtn :disabled="isDirty" variant="text" @click="cancel">Cancel</VBtn>
+      <VBtn :disabled="isDirty" class="ml-2" type="submit" variant="tonal">
+        Save
+      </VBtn>
     </div>
   </VForm>
 </template>
@@ -73,6 +77,8 @@
 import { computed, defineEmits, defineProps, reactive, ref, watch } from 'vue';
 import { Element, ElementData } from '@tailor-cms/ce-multiple-choice-manifest';
 import cloneDeep from 'lodash/cloneDeep';
+import isEqual from 'lodash/isEqual';
+import pull from 'lodash/pull';
 import { v4 as uuid } from 'uuid';
 
 const emit = defineEmits(['save']);
@@ -83,28 +89,27 @@ const props = defineProps<{
 }>();
 
 const form = ref<HTMLFormElement>();
-const isEditing = ref<boolean>(!props.element.id);
 const elementData = reactive<ElementData>(cloneDeep(props.element.data));
 
 const answersCount = computed(() => Object.keys(elementData.answers).length);
+const isDirty = computed(() => isEqual(elementData, props.element.data));
 
 const addAnswer = () => (elementData.answers[uuid()] = '');
-const removeAnswer = (id: string) => delete elementData.answers[id];
+const removeAnswer = (id: string) => {
+  delete elementData.answers[id];
+  pull(elementData.correct, id);
+};
 const updateAnswer = (id: string, value: string) =>
   (elementData.answers[id] = value);
 
 const save = async () => {
   const { valid } = await form.value?.validate();
-  if (valid) {
-    emit('save', elementData);
-    isEditing.value = false;
-  }
+  if (valid) emit('save', elementData);
 };
 
 const cancel = () => {
   Object.assign(elementData, cloneDeep(props.element.data));
   form.value?.resetValidation();
-  isEditing.value = false;
 };
 
 const requiredRule = (val: string | boolean | number) => {
