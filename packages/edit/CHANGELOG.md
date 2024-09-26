@@ -1,5 +1,41 @@
 # @tailor-cms/ce-multiple-choice-edit
 
+## 0.0.9
+
+### Patch Changes
+
+- Remove switch
+
+## 0.0.8
+
+### Patch Changes
+
+- Refactor editina and disabled states
+
+## 0.0.7
+
+### Patch Changes
+
+- Fix disabled state
+
+## 0.0.6
+
+### Patch Changes
+
+- Add disabled state
+
+## 0.0.5
+
+### Patch Changes
+
+- Update build
+
+## 0.0.4
+
+### Patch Changes
+
+- Update condition
+
 ## 0.0.3
 
 ### Patch Changes

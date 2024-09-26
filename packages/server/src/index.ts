@@ -30,9 +30,11 @@ export function afterLoaded(
   runtime: ServerRuntime,
 ) {
   console.log('After loaded hook');
-  if (runtime === 'authoring') return element;
-  const data = omit(element.data, ['correct']);
-  return Object.assign(element, { data });
+  if (runtime === 'delivery') {
+    const data = omit(element.data, ['correct']);
+    return Object.assign(element, { data });
+  }
+  return element;
 }
 
 export function afterRetrieve(
