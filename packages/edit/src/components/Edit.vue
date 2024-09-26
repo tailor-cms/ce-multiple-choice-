@@ -12,9 +12,9 @@
       class="my-3"
       label="Question"
       rows="3"
-      variant="outlined"
       auto-grow
     />
+    <div class="text-subtitle-2 mb-2">Select correct answers</div>
     <VSlideYTransition group>
       <VTextField
         v-for="(answer, id, index) in elementData.answers"
@@ -23,8 +23,7 @@
         :model-value="answer"
         :readonly="isDisabled"
         :rules="[requiredRule]"
-        class="my-3"
-        variant="outlined"
+        class="my-2"
         @update:model-value="updateAnswer(id, $event)"
       >
         <template #prepend>
@@ -55,7 +54,6 @@
       <VBtn
         v-if="!isDisabled"
         prepend-icon="mdi-plus"
-        size="small"
         variant="text"
         rounded
         @click="addAnswer"
