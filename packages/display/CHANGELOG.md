@@ -1,5 +1,11 @@
 # @tailor-cms/ce-multiple-choice-display
 
+## 0.0.12
+
+### Patch Changes
+
+- Refactor data, update style
+
 ## 0.0.11
 
 ### Patch Changes
