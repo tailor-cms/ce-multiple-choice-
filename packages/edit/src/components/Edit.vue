@@ -15,41 +15,48 @@
       auto-grow
     />
     <div class="text-subtitle-2 mb-2">Select correct answers</div>
-    <VSlideYTransition group>
-      <VTextField
-        v-for="(answer, index) in elementData.answers"
-        :key="index"
-        :model-value="answer"
-        :readonly="isDisabled"
-        :rules="[requiredRule]"
-        class="my-2"
-        placeholder="Answer..."
-        @update:model-value="updateAnswer(index, $event)"
-      >
-        <template #prepend>
-          <VCheckbox
-            v-model="elementData.correct"
+    <VInput
+      :model-value="!!elementData.correct.length"
+      :rules="[(val: any) => val || 'Please choose the correct answers']"
+    >
+      <div class="d-flex flex-column w-100">
+        <VSlideYTransition group>
+          <VTextField
+            v-for="(answer, index) in elementData.answers"
+            :key="index"
+            :model-value="answer"
             :readonly="isDisabled"
             :rules="[requiredRule]"
-            :validation-value="!!elementData.correct.length"
-            :value="index"
-            color="primary"
-            hide-details
-            multiple
-          />
-        </template>
-        <template #append>
-          <VBtn
-            v-if="!isDisabled && answersCount > 2"
-            aria-label="Remove answer"
-            density="comfortable"
-            icon="mdi-close"
-            variant="text"
-            @click="removeAnswer(index)"
-          />
-        </template>
-      </VTextField>
-    </VSlideYTransition>
+            class="my-2"
+            placeholder="Answer..."
+            @update:model-value="updateAnswer(index, $event)"
+          >
+            <template #prepend>
+              <VCheckbox
+                v-model="elementData.correct"
+                :readonly="isDisabled"
+                :rules="[requiredRule]"
+                :validation-value="!!elementData.correct.length"
+                :value="index"
+                color="primary"
+                hide-details
+                multiple
+              />
+            </template>
+            <template #append>
+              <VBtn
+                v-if="!isDisabled && answersCount > 2"
+                aria-label="Remove answer"
+                density="comfortable"
+                icon="mdi-close"
+                variant="text"
+                @click="removeAnswer(index)"
+              />
+            </template>
+          </VTextField>
+        </VSlideYTransition>
+      </div>
+    </VInput>
     <div class="d-flex justify-center align-center mb-2">
       <VBtn
         v-if="!isDisabled"
