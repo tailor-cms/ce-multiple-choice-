@@ -12,50 +12,55 @@
       class="my-3"
       label="Question"
       rows="3"
-      variant="outlined"
       auto-grow
     />
-    <VSlideYTransition group>
-      <VTextField
-        v-for="(answer, id, index) in elementData.answers"
-        :key="id"
-        :label="`Answer ${index + 1}`"
-        :model-value="answer"
-        :readonly="isDisabled"
-        :rules="[requiredRule]"
-        class="my-3"
-        variant="outlined"
-        @update:model-value="updateAnswer(id, $event)"
-      >
-        <template #prepend>
-          <VCheckbox
-            v-model="elementData.correct"
+    <div class="text-subtitle-2 mb-2">Select correct answers</div>
+    <VInput
+      :model-value="!!elementData.correct.length"
+      :rules="[(val: any) => val || 'Please choose the correct answers']"
+    >
+      <div class="d-flex flex-column w-100">
+        <VSlideYTransition group>
+          <VTextField
+            v-for="(answer, index) in elementData.answers"
+            :key="index"
+            :model-value="answer"
             :readonly="isDisabled"
             :rules="[requiredRule]"
-            :validation-value="!!elementData.correct.length!"
-            :value="id"
-            color="primary"
-            hide-details
-            multiple
-          />
-        </template>
-        <template #append>
-          <VBtn
-            v-if="!isDisabled && answersCount > 2"
-            aria-label="Remove answer"
-            density="comfortable"
-            icon="mdi-close"
-            variant="text"
-            @click="removeAnswer(id)"
-          />
-        </template>
-      </VTextField>
-    </VSlideYTransition>
+            class="my-2"
+            placeholder="Answer..."
+            @update:model-value="updateAnswer(index, $event)"
+          >
+            <template #prepend>
+              <VCheckbox
+                v-model="elementData.correct"
+                :readonly="isDisabled"
+                :rules="[requiredRule]"
+                :validation-value="!!elementData.correct.length"
+                :value="index"
+                color="primary"
+                hide-details
+                multiple
+              />
+            </template>
+            <template #append>
+              <VBtn
+                v-if="!isDisabled && answersCount > 2"
+                aria-label="Remove answer"
+                density="comfortable"
+                icon="mdi-close"
+                variant="text"
+                @click="removeAnswer(index)"
+              />
+            </template>
+          </VTextField>
+        </VSlideYTransition>
+      </div>
+    </VInput>
     <div class="d-flex justify-center align-center mb-2">
       <VBtn
         v-if="!isDisabled"
         prepend-icon="mdi-plus"
-        size="small"
         variant="text"
         rounded
         @click="addAnswer"
@@ -77,8 +82,6 @@ import { computed, defineEmits, defineProps, reactive, ref, watch } from 'vue';
 import { Element, ElementData } from '@tailor-cms/ce-multiple-choice-manifest';
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
-import pull from 'lodash/pull';
-import { v4 as uuid } from 'uuid';
 
 const emit = defineEmits(['save']);
 const props = defineProps<{
@@ -90,16 +93,20 @@ const props = defineProps<{
 const form = ref<HTMLFormElement>();
 const elementData = reactive<ElementData>(cloneDeep(props.element.data));
 
-const answersCount = computed(() => Object.keys(elementData.answers).length);
+const answersCount = computed(() => elementData.answers.length);
 const isDirty = computed(() => isEqual(elementData, props.element.data));
 
-const addAnswer = () => (elementData.answers[uuid()] = '');
-const removeAnswer = (id: string) => {
-  delete elementData.answers[id];
-  pull(elementData.correct, id);
+const addAnswer = () => elementData.answers.push('');
+const removeAnswer = (answerIndex: number) => {
+  elementData.answers.splice(answerIndex, 1);
+  const index = elementData.correct.indexOf(answerIndex);
+  if (index !== -1) elementData.correct.splice(index, 1);
+  elementData.correct.forEach((it, i) => {
+    if (it >= answerIndex) elementData.correct[i] = it - 1;
+  });
 };
-const updateAnswer = (id: string, value: string) =>
-  (elementData.answers[id] = value);
+const updateAnswer = (index: number, value: string) =>
+  (elementData.answers[index] = value);
 
 const save = async () => {
   const { valid } = await form.value?.validate();

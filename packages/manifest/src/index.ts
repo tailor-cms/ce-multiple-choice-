@@ -1,12 +1,8 @@
-import { v4 as uuid } from 'uuid';
-
 import type {
   DataInitializer,
   ElementData,
   ElementManifest,
 } from './interfaces';
-
-const [uuid1, uuid2, uuid3] = Array.from({ length: 3 }, () => uuid());
 
 // Element unique id within the target system (e.g. Tailor)
 export const type = 'CE_MULTIPLE_CHOICE';
@@ -20,11 +16,7 @@ export const name = 'Multiple Choice';
 export const initState: DataInitializer = (): ElementData => ({
   question: '',
   correct: [],
-  answers: {
-    [uuid1]: '',
-    [uuid2]: '',
-    [uuid3]: '',
-  },
+  answers: ['', '', ''],
 });
 
 // Can be loaded from package.json

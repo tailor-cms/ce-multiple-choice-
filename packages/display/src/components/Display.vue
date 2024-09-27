@@ -14,10 +14,10 @@
         multiple
       >
         <VItem
-          v-for="(item, uuid, index) in data.answers"
-          :key="uuid"
+          v-for="(item, index) in data.answers"
+          :key="index"
           v-slot="{ toggle, isSelected, selectedClass }"
-          :value="uuid"
+          :value="index"
         >
           <VCard
             :class="selectedClass"
@@ -41,7 +41,7 @@
             {{ item }}
             <VSpacer />
             <template v-if="submitted">
-              <VIcon v-if="isSelected" v-bind="iconProps(uuid)" />
+              <VIcon v-if="isSelected" v-bind="iconProps(index)" />
             </template>
           </VCard>
         </VItem>
@@ -84,8 +84,8 @@ const requiredRule = (val: string | boolean | number) => {
   return !!val || 'You have to select an answer.';
 };
 
-const iconProps = (uuid: string) => {
-  const isCorrect = props.userState?.correct.includes(uuid);
+const iconProps = (index: number) => {
+  const isCorrect = props.userState?.correct.includes(index);
   if (isCorrect) return { icon: 'mdi-check-circle', color: 'success' };
   return { icon: 'mdi-close-circle', color: 'error' };
 };

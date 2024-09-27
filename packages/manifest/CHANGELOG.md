@@ -1,5 +1,17 @@
 # @tailor-cms/ce-multiple-choice-manifest
 
+## 0.0.12
+
+### Patch Changes
+
+- Refactor data, update style
+
+## 0.0.11
+
+### Patch Changes
+
+- Update style for consistency
+
 ## 0.0.10
 
 ### Patch Changes

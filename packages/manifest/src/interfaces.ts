@@ -2,8 +2,8 @@
 
 export interface ElementData {
   question: string;
-  correct: string[];
-  answers: Record<string, string>;
+  correct: number[];
+  answers: string[];
 }
 
 export interface Element {
