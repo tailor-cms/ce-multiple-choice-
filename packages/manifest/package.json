@@ -23,7 +23,6 @@
   },
   "devDependencies": {
     "@tailor-cms/eslint-config": "0.0.2",
-    "@types/uuid": "^10.0.0",
     "tsup": "^7.2.0",
     "typescript": "^5.1.6"
   },
@@ -43,9 +42,6 @@
     "minify": false,
     "clean": false,
     "dts": true
-  },
-  "dependencies": {
-    "uuid": "^10.0.0"
   },
   "publishConfig": {
     "access": "public"
