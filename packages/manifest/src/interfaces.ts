@@ -4,6 +4,8 @@ export interface ElementData {
   question: string;
   correct: number[];
   answers: string[];
+  hint: string;
+  feedback: { [key: number]: string };
 }
 
 export interface Element {

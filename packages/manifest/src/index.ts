@@ -17,6 +17,8 @@ export const initState: DataInitializer = (): ElementData => ({
   question: '',
   correct: [],
   answers: ['', '', ''],
+  hint: '',
+  feedback: {},
 });
 
 // Can be loaded from package.json
