@@ -4,6 +4,7 @@
     <div class="rich-text px-2 my-4" v-html="data.question"></div>
     <div v-if="data.hint" class="d-flex justify-end mb-4">
       <VTooltip
+        v-model="showHint"
         :open-on-hover="false"
         location="bottom"
         max-width="350"
@@ -12,6 +13,7 @@
       >
         <template #activator="{ isActive, props: tooltipProps }">
           <VBtn
+            v-click-outside="() => (showHint = false)"
             v-bind="tooltipProps"
             :active="isActive"
             :prepend-icon="`mdi-lightbulb-${isActive ? 'on' : 'outline'}`"
@@ -93,6 +95,7 @@ const props = defineProps<{ id: number; data: ElementData; userState: any }>();
 const emit = defineEmits(['interaction']);
 
 const form = ref<HTMLFormElement>();
+const showHint = ref(false);
 const submitted = ref('isCorrect' in (props.userState ?? {}));
 const selectedAnswer = ref<string[]>(props.userState?.response ?? []);
 
