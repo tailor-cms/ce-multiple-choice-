@@ -45,7 +45,12 @@
                 hide-details
                 multiple
               />
-              <VAvatar v-else color="primary" rounded="lg" variant="tonal">
+              <VAvatar
+                v-else
+                color="primary-darken-3"
+                rounded="lg"
+                variant="tonal"
+              >
                 {{ index + 1 }}
               </VAvatar>
             </template>
@@ -53,6 +58,7 @@
               <VBtn
                 v-if="!isDisabled && answersCount > 2"
                 aria-label="Remove answer"
+                color="primary-darken-4"
                 density="comfortable"
                 icon="mdi-close"
                 variant="text"
@@ -66,6 +72,7 @@
     <div class="d-flex justify-end mb-12">
       <VBtn
         v-if="!isDisabled"
+        color="primary-darken-4"
         prepend-icon="mdi-plus"
         variant="text"
         rounded
@@ -89,8 +96,21 @@
       @update="Object.assign(elementData.feedback, $event)"
     />
     <div v-if="!isDisabled" class="d-flex justify-end">
-      <VBtn :disabled="isDirty" variant="text" @click="cancel">Cancel</VBtn>
-      <VBtn :disabled="isDirty" class="ml-2" type="submit" variant="tonal">
+      <VBtn
+        :disabled="isDirty"
+        color="primary-darken-4"
+        variant="text"
+        @click="cancel"
+      >
+        Cancel
+      </VBtn>
+      <VBtn
+        :disabled="isDirty"
+        class="ml-2"
+        color="primary-darken-3"
+        type="submit"
+        variant="tonal"
+      >
         Save
       </VBtn>
     </div>
@@ -102,10 +122,7 @@ import { computed, defineEmits, defineProps, reactive, ref, watch } from 'vue';
 import { Element, ElementData } from '@tailor-cms/ce-multiple-choice-manifest';
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
-import {
-  QuestionFeedback,
-  RichTextEditor,
-} from '@tailor-cms/core-components-next';
+import { QuestionFeedback, RichTextEditor } from '@tailor-cms/core-components';
 
 const emit = defineEmits(['save']);
 const props = defineProps<{
