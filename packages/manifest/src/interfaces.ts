@@ -1,8 +1,9 @@
 // Example counter component
 
 export interface ElementData {
+  isGraded?: boolean;
   question: string;
-  correct: number[];
+  correct?: number[];
   answers: string[];
   hint: string;
   feedback: { [key: number]: string };
@@ -34,6 +35,7 @@ export interface ElementManifest {
   version: string;
   name: string;
   ssr: boolean;
+  isQuestion: boolean;
   initState: DataInitializer;
   Edit?: object;
   TopToolbar?: object;

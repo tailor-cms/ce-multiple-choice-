@@ -15,7 +15,6 @@ export const name = 'Multiple Choice';
 // e.g. for simple counter component:
 export const initState: DataInitializer = (): ElementData => ({
   question: '',
-  correct: [],
   answers: ['', '', ''],
   hint: '',
   feedback: {},
@@ -33,18 +32,14 @@ const ui = {
   forceFullWidth: true,
 };
 
-export const mocks = {
-  displayContexts: [{ name: 'No selection', data: {} }],
-};
-
 const manifest: ElementManifest = {
   type,
   version: '1.0',
   name,
+  isQuestion: true,
   ssr: false,
   initState,
   ui,
-  mocks,
 };
 
 export default manifest;

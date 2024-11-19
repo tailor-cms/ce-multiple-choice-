@@ -65,7 +65,7 @@
             </VAvatar>
             {{ item }}
             <VSpacer />
-            <template v-if="submitted">
+            <template v-if="submitted && 'isCorrect' in userState">
               <VIcon v-if="isSelected" v-bind="iconProps(index)" />
             </template>
           </VCard>
@@ -74,8 +74,7 @@
     </VInput>
     <VAlert
       v-if="submitted"
-      :text="userState?.isCorrect ? 'Correct' : 'Incorrect'"
-      :type="userState?.isCorrect ? 'success' : 'error'"
+      v-bind="alertProps"
       class="mb-3"
       rounded="lg"
       variant="tonal"
@@ -88,7 +87,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { ElementData } from '@tailor-cms/ce-multiple-choice-manifest';
 
 const props = defineProps<{ id: number; data: ElementData; userState: any }>();
@@ -96,12 +95,22 @@ const emit = defineEmits(['interaction']);
 
 const form = ref<HTMLFormElement>();
 const showHint = ref(false);
-const submitted = ref('isCorrect' in (props.userState ?? {}));
-const selectedAnswer = ref<string[]>(props.userState?.response ?? []);
+const submitted = ref(false);
+const selectedAnswer = ref<string[]>(props.userState.response ?? []);
+
+const alertProps = computed(() => {
+  const isGraded = 'isCorrect' in props.userState;
+  const isCorrect = props.userState.isCorrect;
+
+  if (!isGraded) return { text: 'Submitted', type: 'info' };
+  if (isCorrect) return { text: 'Correct', type: 'success' };
+  return { text: 'Incorrect', type: 'error' };
+});
 
 const submit = async () => {
   const { valid } = await form.value?.validate();
   if (valid) {
+    submitted.value = true;
     emit('interaction', { response: selectedAnswer.value });
   }
 };
@@ -111,7 +120,7 @@ const requiredRule = (val: string | boolean | number) => {
 };
 
 const iconProps = (index: number) => {
-  const isCorrect = props.userState?.correct.includes(index);
+  const isCorrect = props.userState.correct?.includes(index);
   if (isCorrect) return { icon: 'mdi-check-circle', color: 'success' };
   return { icon: 'mdi-close-circle', color: 'error' };
 };
@@ -120,7 +129,6 @@ watch(
   () => props.userState,
   (state = {}) => {
     selectedAnswer.value = state.response || [];
-    submitted.value = 'isCorrect' in state;
   },
   { deep: true },
 );

@@ -17,8 +17,8 @@
     />
     <div class="text-subtitle-2 mb-2">{{ title }}</div>
     <VInput
-      :model-value="!!elementData.correct.length"
-      :rules="[props.isGraded && requiredRule].filter(Boolean)"
+      :model-value="elementData.correct?.length"
+      :rules="[isGraded ? requiredRule : undefined]"
     >
       <div class="d-flex flex-column w-100">
         <VSlideYTransition group>
@@ -39,7 +39,7 @@
                 v-model="elementData.correct"
                 :readonly="isDisabled"
                 :rules="[requiredRule]"
-                :validation-value="!!elementData.correct.length"
+                :validation-value="elementData.correct?.length"
                 :value="index"
                 color="primary"
                 hide-details
@@ -83,10 +83,10 @@
     </div>
     <VTextField
       v-model="elementData.hint"
+      :clearable="!isDisabled"
       :readonly="isDisabled"
       placeholder="Optional hint..."
       variant="outlined"
-      clearable
     />
     <QuestionFeedback
       :answers="elementData.answers"
@@ -120,9 +120,9 @@
 <script lang="ts" setup>
 import { computed, defineEmits, defineProps, reactive, ref, watch } from 'vue';
 import { Element, ElementData } from '@tailor-cms/ce-multiple-choice-manifest';
+import { QuestionFeedback, RichTextEditor } from '@tailor-cms/core-components';
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
-import { QuestionFeedback, RichTextEditor } from '@tailor-cms/core-components';
 
 const emit = defineEmits(['save']);
 const props = defineProps<{
@@ -150,11 +150,13 @@ const addAnswer = () => elementData.answers.push('');
 const removeAnswer = (answerIndex: number) => {
   elementData.answers.splice(answerIndex, 1);
 
-  if (props.isGraded) {
+  if (props.isGraded && elementData.correct) {
     const index = elementData.correct.indexOf(answerIndex);
     if (index !== -1) elementData.correct.splice(index, 1);
     elementData.correct.forEach((it, i) => {
-      if (it >= answerIndex) elementData.correct[i] = it - 1;
+      if (it >= answerIndex && elementData.correct) {
+        elementData.correct[i] = it - 1;
+      }
     });
   }
 };
@@ -171,14 +173,23 @@ const cancel = () => {
   form.value?.resetValidation();
 };
 
-const requiredRule = (val: string | boolean | number) => {
-  if (val !== null && val !== undefined && val !== '') return true;
-  return 'The field is required';
+const requiredRule = (val?: string | number) => {
+  return !!val || 'The field is required.';
 };
 
 watch(
   () => props.element.data,
   (data) => Object.assign(elementData, cloneDeep(data)),
+);
+
+watch(
+  () => props.isGraded,
+  (isGraded) => {
+    if (!isGraded) delete elementData.correct;
+    else elementData.correct = [];
+    emit('save', elementData);
+  },
+  { immediate: true },
 );
 </script>
 
