@@ -1,5 +1,11 @@
 # @tailor-cms/ce-multiple-choice-display
 
+## 0.0.13
+
+### Patch Changes
+
+- Introduced isGraded option, refactored question types.
+
 ## 0.0.12
 
 ### Patch Changes
