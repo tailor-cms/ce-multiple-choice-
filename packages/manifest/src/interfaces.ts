@@ -1,7 +1,6 @@
 // Example counter component
 
 export interface ElementData {
-  isGraded?: boolean;
   question: string;
   correct?: number[];
   answers: string[];

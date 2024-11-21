@@ -11,14 +11,12 @@
       :rules="[requiredRule]"
       class="my-3"
       label="Question"
-      rows="3"
       variant="outlined"
-      auto-grow
     />
     <div class="text-subtitle-2 mb-2">{{ title }}</div>
     <VInput
       :model-value="elementData.correct?.length"
-      :rules="[isGraded ? requiredRule : undefined]"
+      :rules="[isGraded && requiredRule].filter(Boolean)"
     >
       <div class="d-flex flex-column w-100">
         <VSlideYTransition group>
@@ -184,8 +182,8 @@ watch(
 
 watch(
   () => props.isGraded,
-  (isGraded) => {
-    if (!isGraded) delete elementData.correct;
+  (val) => {
+    if (!val) delete elementData.correct;
     else elementData.correct = [];
     emit('save', elementData);
   },
