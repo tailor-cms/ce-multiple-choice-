@@ -1,7 +1,7 @@
 <template>
   <VForm
     ref="form"
-    class="tce-multiple-choice"
+    class="tce-multiple-choice my-4"
     validate-on="submit"
     @submit.prevent="save"
   >
