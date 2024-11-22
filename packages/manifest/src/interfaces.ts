@@ -1,5 +1,3 @@
-// Example counter component
-
 export interface ElementData {
   question: string;
   correct?: number[];
