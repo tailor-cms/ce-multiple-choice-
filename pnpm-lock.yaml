@@ -38,6 +38,9 @@ importers:
 
   packages/display:
     dependencies:
+      '@tailor-cms/lx-components':
+        specifier: ^0.0.2
+        version: 0.0.2(vue@3.3.4)(vuetify@3.7.3)
       vue:
         specifier: ^3.3.4
         version: 3.3.4
@@ -732,6 +735,12 @@ packages:
       eslint-plugin-promise: '>=6.1.1'
       eslint-plugin-vue: '>=9.17.0'
       eslint-plugin-vuejs-accessibility: '>=2.2.0'
+
+  '@tailor-cms/lx-components@0.0.2':
+    resolution: {integrity: sha512-7VlnCayqFThKEuEGcDdTbuAKRn921Y4v27TL1CFQyTvkIGLQYwgsgV32aYmUYV8FEnykTkay6l3TbDOhHeEZiA==}
+    peerDependencies:
+      vue: ^3.3.4
+      vuetify: 3.7.0
 
   '@tailor-cms/tce-boot@0.6.19':
     resolution: {integrity: sha512-itJmAKR8kyYG1/P2bII6NrGigA/0aYa/MHrqOrTTwDDsyj/r09b1iG9dnqFOXxLfp+1mCIgwWmE1sSwQDRJlUA==}
@@ -4541,6 +4550,11 @@ snapshots:
       eslint-plugin-promise: 6.1.1(eslint@8.56.0)
       eslint-plugin-vue: 9.21.1(eslint@8.56.0)
       eslint-plugin-vuejs-accessibility: 2.2.1(eslint@8.56.0)
+
+  '@tailor-cms/lx-components@0.0.2(vue@3.3.4)(vuetify@3.7.3)':
+    dependencies:
+      vue: 3.3.4
+      vuetify: 3.7.3(typescript@5.3.3)(vite-plugin-vuetify@1.0.2)(vue@3.3.4)
 
   '@tailor-cms/tce-boot@0.6.19(@babel/parser@7.23.9)(@types/node@20.11.19)(rollup@4.12.0)':
     dependencies:

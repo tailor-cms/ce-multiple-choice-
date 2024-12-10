@@ -1,41 +1,24 @@
 <template>
-  <VForm ref="form" class="tce-root" @submit.prevent="submit">
-    <!-- eslint-disable-next-line vue/no-v-html -->
-    <div class="rich-text px-2 my-4" v-html="data.question"></div>
-    <div v-if="data.hint" class="d-flex justify-end mb-4">
-      <VTooltip
-        v-model="showHint"
-        :open-on-hover="false"
-        location="bottom"
-        max-width="350"
-        close-on-back
-        open-on-click
-      >
-        <template #activator="{ isActive, props: tooltipProps }">
-          <VBtn
-            v-click-outside="() => (showHint = false)"
-            v-bind="tooltipProps"
-            :active="isActive"
-            :prepend-icon="`mdi-lightbulb-${isActive ? 'on' : 'outline'}`"
-            size="small"
-            text="Hint"
-            variant="text"
-            rounded
-          />
-        </template>
-        {{ data.hint }}
-      </VTooltip>
-    </div>
+  <QuestionContainer
+    :data="data"
+    :is-correct="userState.isCorrect"
+    :is-graded="isGraded"
+    :is-submitted="isSubmitted"
+    allowed-retake
+    @retry="isSubmitted = false"
+    @submit="submit"
+  >
+    <div class="text-subtitle-2 mb-2">Select one:</div>
     <VInput
+      :model-value="selectedAnswer"
       :rules="[requiredRule]"
-      :validation-value="selectedAnswer.length != 0"
       hide-details="auto"
       validate-on="submit"
     >
       <VItemGroup
         v-model="selectedAnswer"
-        class="w-100"
-        selected-class="bg-blue-grey-lighten-4"
+        class="w-100 d-flex flex-column ga-2"
+        selected-class="bg-blue-grey-lighten-5"
         multiple
       >
         <VItem
@@ -46,11 +29,11 @@
         >
           <VCard
             :class="selectedClass"
-            :disabled="submitted"
-            class="d-flex align-center px-4 py-3 mb-3"
-            color="blue-grey-darken-2"
-            rounded="lg"
-            variant="outlined"
+            :disabled="isSubmitted"
+            class="d-flex align-center px-4 py-3"
+            border
+            flat
+            rounded
             @click="toggle"
           >
             <VAvatar
@@ -61,82 +44,51 @@
               rounded="lg"
               size="small"
             >
-              {{ index + 1 }}
+              {{ indexToAlpha(index) }}
             </VAvatar>
             {{ item }}
             <VSpacer />
-            <template v-if="submitted && 'isCorrect' in userState">
-              <VIcon v-if="isSelected" v-bind="iconProps(index)" />
+            <template v-if="isSubmitted && isGraded">
+              <VIcon
+                v-if="isSelected"
+                :color="isCorrect(index) ? 'success' : 'error'"
+                :icon="`mdi-${isCorrect(index) ? 'check' : 'close'}-circle'`"
+              />
             </template>
           </VCard>
         </VItem>
       </VItemGroup>
     </VInput>
-    <VAlert
-      v-if="submitted"
-      v-bind="alertProps"
-      class="mb-3"
-      rounded="lg"
-      variant="tonal"
-    />
-    <div class="d-flex justify-end">
-      <VBtn v-if="!submitted" type="submit" variant="tonal">Submit</VBtn>
-      <VBtn v-else variant="tonal" @click="submitted = false">Try Again</VBtn>
-    </div>
-  </VForm>
+  </QuestionContainer>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { ElementData } from '@tailor-cms/ce-multiple-choice-manifest';
+import { QuestionContainer } from '@tailor-cms/lx-components';
 
 const props = defineProps<{ id: number; data: ElementData; userState: any }>();
 const emit = defineEmits(['interaction']);
 
-const form = ref<HTMLFormElement>();
-const showHint = ref(false);
-const submitted = ref(false);
+const isSubmitted = ref(!!props.userState.isSubmitted);
 const selectedAnswer = ref<string[]>(props.userState.response ?? []);
 
-const alertProps = computed(() => {
-  const isGraded = 'isCorrect' in props.userState;
-  const isCorrect = props.userState.isCorrect;
+const isGraded = computed(() => 'isCorrect' in props.userState);
 
-  if (!isGraded) return { text: 'Submitted', type: 'info' };
-  if (isCorrect) return { text: 'Correct', type: 'success' };
-  return { text: 'Incorrect', type: 'error' };
-});
+const indexToAlpha = (index: number) => String.fromCharCode(index + 65);
+const isCorrect = (index: number) => props.userState.correct?.includes(index);
+const submit = () => emit('interaction', { response: selectedAnswer.value });
 
-const submit = async () => {
-  const { valid } = await form.value?.validate();
-  if (valid) {
-    submitted.value = true;
-    emit('interaction', { response: selectedAnswer.value });
-  }
-};
-
-const requiredRule = (val: string | boolean | number) => {
-  return !!val || 'You have to select an answer.';
-};
-
-const iconProps = (index: number) => {
-  const isCorrect = props.userState.correct?.includes(index);
-  if (isCorrect) return { icon: 'mdi-check-circle', color: 'success' };
-  return { icon: 'mdi-close-circle', color: 'error' };
+const requiredRule = (val: number[]) => {
+  return !!val.length || 'You have to select an answer';
 };
 
 watch(
   () => props.userState,
   (state = {}) => {
     selectedAnswer.value = state.response || [];
+    isSubmitted.value = !!state.isSubmitted;
   },
   { deep: true },
 );
 </script>
-
-<style scoped>
-.tce-root {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 1rem;
-}
-</style>
