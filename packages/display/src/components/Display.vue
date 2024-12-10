@@ -8,7 +8,7 @@
     @retry="isSubmitted = false"
     @submit="submit"
   >
-    <div class="text-subtitle-2 mb-2">Select one:</div>
+    <div class="text-subtitle-2 mb-2">Select all that apply:</div>
     <VInput
       :model-value="selectedAnswer"
       :rules="[requiredRule]"
