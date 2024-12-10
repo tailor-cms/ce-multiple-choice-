@@ -12,9 +12,10 @@ export const name = 'Multiple Choice';
 
 // Function which inits element state (data property on the Content Element
 // entity)
-// e.g. for simple counter component:
 export const initState: DataInitializer = (): ElementData => ({
-  question: '',
+  correct: [],
+  embeds: {},
+  question: [],
   answers: ['', '', ''],
   hint: '',
   feedback: {},
@@ -36,6 +37,7 @@ const manifest: ElementManifest = {
   type,
   version: '1.0',
   name,
+  isComposite: true,
   isQuestion: true,
   ssr: false,
   initState,

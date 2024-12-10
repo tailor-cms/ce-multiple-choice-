@@ -1,71 +1,70 @@
 <template>
-  <VForm
-    ref="form"
-    class="tce-multiple-choice my-4"
-    validate-on="submit"
-    @submit.prevent="save"
+  <QuestionContainer
+    v-bind="{
+      allowedEmbedTypes,
+      elementData,
+      isDirty,
+      isDisabled,
+      isGradeable,
+    }"
+    show-feedback
+    @cancel="updateData(element.data)"
+    @save="save"
+    @update="updateData($event)"
   >
-    <div class="text-subtitle-2 mb-2">Question</div>
-    <RichTextEditor
-      v-model="elementData.question"
-      :readonly="isDisabled"
-      :rules="[requiredRule]"
-      class="my-3"
-      variant="outlined"
-    />
     <div class="text-subtitle-2 mb-2">{{ title }}</div>
     <VInput
-      :model-value="elementData.correct?.length"
-      :rules="[isGraded && requiredRule].filter(Boolean)"
+      v-slot="{ isValid }"
+      :model-value="elementData.correct"
+      :rules="validation.correct"
     >
-      <div class="d-flex flex-column w-100">
-        <VSlideYTransition group>
-          <VTextField
-            v-for="(answer, index) in elementData.answers"
-            :key="index"
-            :model-value="answer"
-            :placeholder="placeholder"
-            :readonly="isDisabled"
-            :rules="[requiredRule]"
-            class="mt-2"
-            variant="outlined"
-            @update:model-value="updateAnswer(index, $event)"
-          >
-            <template #prepend>
-              <VCheckbox
-                v-if="isGraded"
-                v-model="elementData.correct"
-                :readonly="isDisabled"
-                :rules="[requiredRule]"
-                :validation-value="elementData.correct?.length"
-                :value="index"
-                color="primary"
-                hide-details
-                multiple
-              />
-              <VAvatar
-                v-else
-                color="primary-darken-3"
-                rounded="lg"
-                variant="tonal"
-              >
-                {{ index + 1 }}
-              </VAvatar>
-            </template>
-            <template #append>
-              <VBtn
-                v-if="!isDisabled && answersCount > 2"
-                aria-label="Remove answer"
-                color="primary-darken-4"
-                density="comfortable"
-                icon="mdi-close"
-                variant="text"
-                @click="removeAnswer(index)"
-              />
-            </template>
-          </VTextField>
-        </VSlideYTransition>
-      </div>
+      <VSlideYTransition group>
+        <VTextField
+          v-for="(answer, index) in elementData.answers"
+          :key="index"
+          :model-value="answer"
+          :placeholder="placeholder"
+          :readonly="isDisabled"
+          :rules="validation.answer"
+          class="my-2 w-100"
+          variant="outlined"
+          @update:model-value="updateAnswer(index, $event)"
+        >
+          <template #prepend>
+            <VCheckbox
+              v-if="isGradeable"
+              v-model="elementData.correct"
+              :error="isValid.value === false"
+              :readonly="isDisabled"
+              :value="index"
+              color="primary"
+              hide-details
+              multiple
+            />
+            <VAvatar
+              v-else
+              class="font-weight-bold ma-1"
+              color="primary-darken-3"
+              rounded="lg"
+              size="small"
+            >
+              {{ index + 1 }}
+            </VAvatar>
+          </template>
+          <template v-if="!isDisabled && answersCount > 2" #append>
+            <VBtn
+              aria-label="Remove answer"
+              color="primary-darken-4"
+              size="x-small"
+              variant="text"
+              icon
+              @click="removeAnswer(index)"
+            >
+              <VIcon icon="mdi-close" size="large" />
+            </VBtn>
+          </template>
+        </VTextField>
+      </VSlideYTransition>
     </VInput>
     <div class="d-flex justify-end mb-12">
       <VBtn
@@ -79,121 +78,70 @@
         {{ btnLabel }}
       </VBtn>
     </div>
-    <div class="text-subtitle-2 mb-2">Hint</div>
-    <VTextField
-      v-model="elementData.hint"
-      :clearable="!isDisabled"
-      :readonly="isDisabled"
-      placeholder="Optional hint..."
-      variant="outlined"
-    />
-    <QuestionFeedback
-      :answers="elementData.answers"
-      :feedback="elementData.feedback || {}"
-      :is-editing="!isDisabled"
-      :is-graded="isGraded"
-      @update="Object.assign(elementData.feedback, $event)"
-    />
-    <div v-if="!isDisabled" class="d-flex justify-end">
-      <VBtn
-        :disabled="isDirty"
-        color="primary-darken-4"
-        variant="text"
-        @click="cancel"
-      >
-        Cancel
-      </VBtn>
-      <VBtn
-        :disabled="isDirty"
-        class="ml-2"
-        color="primary-darken-3"
-        type="submit"
-        variant="tonal"
-      >
-        Save
-      </VBtn>
-    </div>
-  </VForm>
+  </QuestionContainer>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineEmits, defineProps, reactive, ref, watch } from 'vue';
+import { computed, defineEmits, defineProps, reactive, watch } from 'vue';
 import { Element, ElementData } from '@tailor-cms/ce-multiple-choice-manifest';
-import { QuestionFeedback, RichTextEditor } from '@tailor-cms/core-components';
 import cloneDeep from 'lodash/cloneDeep';
 import isEqual from 'lodash/isEqual';
+import { QuestionContainer } from '@tailor-cms/core-components';
 
-const emit = defineEmits(['save']);
 const props = defineProps<{
+  allowedEmbedTypes: string[];
   element: Element;
   isFocused: boolean;
   isDisabled: boolean;
-  isGraded: boolean;
+  isGradeable: boolean;
 }>();
+const emit = defineEmits(['save']);
 
-const form = ref<HTMLFormElement>();
 const elementData = reactive<ElementData>(cloneDeep(props.element.data));
 
 const answersCount = computed(() => elementData.answers.length);
-const isDirty = computed(() => isEqual(elementData, props.element.data));
+const isDirty = computed(() => !isEqual(elementData, props.element.data));
 
 const title = computed(() =>
-  props.isGraded ? 'Select correct answer(s)' : 'Options',
+  props.isGradeable ? 'Select correct answer(s)' : 'Options',
 );
 const placeholder = computed(() =>
-  props.isGraded ? 'Answer...' : 'Option...',
+  props.isGradeable ? 'Answer...' : 'Option...',
 );
-const btnLabel = computed(() => (props.isGraded ? 'Add answer' : 'Add option'));
+const btnLabel = computed(() =>
+  props.isGradeable ? 'Add answer' : 'Add option',
+);
+
+const validation = computed(() => ({
+  answer: [(val: string) => !!val || 'Answer is required'],
+  correct: props.isGradeable
+    ? [(val?: number[]) => val?.length || 'Please choose the correct answer(s)']
+    : [],
+}));
 
 const addAnswer = () => elementData.answers.push('');
 const removeAnswer = (answerIndex: number) => {
   elementData.answers.splice(answerIndex, 1);
 
-  if (props.isGraded && elementData.correct) {
-    const index = elementData.correct.indexOf(answerIndex);
-    if (index !== -1) elementData.correct.splice(index, 1);
-    elementData.correct.forEach((it, i) => {
+  if (props.isGradeable) {
+    const index = elementData.correct!.indexOf(answerIndex);
+    if (index !== -1) elementData.correct!.splice(index, 1);
+    elementData.correct!.forEach((it, i) => {
       if (it >= answerIndex && elementData.correct) {
         elementData.correct[i] = it - 1;
       }
     });
   }
 };
+
 const updateAnswer = (index: number, value: string) =>
   (elementData.answers[index] = value);
 
-const save = async () => {
-  const { valid } = await form.value?.validate();
-  if (valid) emit('save', elementData);
+const save = () => emit('save', elementData);
+
+const updateData = (data: ElementData) => {
+  Object.assign(elementData, cloneDeep(data));
 };
 
-const cancel = () => {
-  Object.assign(elementData, cloneDeep(props.element.data));
-  form.value?.resetValidation();
-};
-
-const requiredRule = (val?: string | number) => {
-  return !!val || 'The field is required.';
-};
-
-watch(
-  () => props.element.data,
-  (data) => Object.assign(elementData, cloneDeep(data)),
-);
-
-watch(
-  () => props.isGraded,
-  (val) => {
-    if (!val) delete elementData.correct;
-    else elementData.correct = [];
-    emit('save', elementData);
-  },
-  { immediate: true },
-);
+watch(() => props.element.data, updateData);
 </script>
-
-<style lang="scss" scoped>
-.tce-multiple-choice {
-  text-align: left;
-}
-</style>
