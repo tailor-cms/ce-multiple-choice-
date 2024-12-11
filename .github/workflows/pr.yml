@@ -1,4 +1,6 @@
 name: PR
+env:
+  PLAYWRIGHT_VERSION: 1.49.1
 on:
   push:
     branches: [ main, develop ]
