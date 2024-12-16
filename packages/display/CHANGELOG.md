@@ -1,5 +1,11 @@
 # @tailor-cms/ce-multiple-choice-display
 
+## 0.0.15
+
+### Patch Changes
+
+- Refactored isGradable handling, by storing it directly in element data.
+
 ## 0.0.14
 
 ### Patch Changes
