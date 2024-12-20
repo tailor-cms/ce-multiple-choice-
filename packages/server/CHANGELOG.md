@@ -1,5 +1,29 @@
 # @tailor-cms/ce-multiple-choice-server
 
+## 0.0.16
+
+### Patch Changes
+
+- Bumped tce-display-runtime.
+
+## 0.0.15
+
+### Patch Changes
+
+- Refactored isGradable handling, by storing it directly in element data.
+
+## 0.0.14
+
+### Patch Changes
+
+- Refactored Edit and Display components to use QuestionContainer component from core-components/lx-components.
+
+## 0.0.13
+
+### Patch Changes
+
+- Introduced isGraded option, refactored question types.
+
 ## 0.0.12
 
 ### Patch Changes

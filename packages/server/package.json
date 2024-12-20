@@ -3,7 +3,7 @@
   "description": "Tailor CMS multiple choice server component",
   "author": "Studion <info@gostudion.com> (https://github.com/tailor-cms)",
   "type": "module",
-  "version": "0.0.12",
+  "version": "0.0.16",
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -29,6 +29,9 @@
     "tsup": "^7.2.0",
     "typescript": "^5.1.6"
   },
+  "dependencies": {
+    "lodash": "^4.17.21"
+  },
   "tsup": {
     "entry": [
       "src/index.ts"
@@ -45,9 +48,6 @@
     "minify": false,
     "clean": false,
     "dts": true
-  },
-  "dependencies": {
-    "lodash": "^4.17.21"
   },
   "publishConfig": {
     "access": "public"
