@@ -119,7 +119,7 @@ const btnLabel = computed(() =>
 const validation = computed(() => ({
   answer: [(val: string) => !!val || 'Answer is required'],
   correct: isGradable.value
-    ? [(val?: number[]) => val?.length || 'Please choose the correct answer(s)']
+    ? [(v?: number[]) => !!v?.length || 'Please choose the correct answer(s)']
     : [],
 }));
 
