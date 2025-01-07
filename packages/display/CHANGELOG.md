@@ -1,5 +1,11 @@
 # @tailor-cms/ce-multiple-choice-display
 
+## 0.0.17
+
+### Patch Changes
+
+- Fixed validation value type in authoring component.
+
 ## 0.0.16
 
 ### Patch Changes
