@@ -1,5 +1,11 @@
 # @tailor-cms/ce-multiple-choice-display
 
+## 0.0.18
+
+### Patch Changes
+
+- Remove prefix from element type.
+
 ## 0.0.17
 
 ### Patch Changes
