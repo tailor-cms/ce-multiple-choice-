@@ -3,8 +3,8 @@
     v-bind="{
       type: manifest.name,
       icon: manifest.ui.icon,
-      embedTypes,
       elementData,
+      embedElementConfig,
       isDirty,
       isDisabled,
     }"
@@ -93,8 +93,8 @@ import isEqual from 'lodash/isEqual';
 import { QuestionContainer } from '@tailor-cms/core-components';
 
 const props = defineProps<{
-  embedTypes: any[];
   element: Element;
+  embedElementConfig: any[];
   isFocused: boolean;
   isDisabled: boolean;
 }>();
