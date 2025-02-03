@@ -1,10 +1,6 @@
 <template>
   <QuestionContainer
-    v-bind="{
-      elementData,
-      embedElementConfig,
-      isDisabled,
-    }"
+    v-bind="{ elementData, embedElementConfig, isDisabled }"
     show-feedback
     @update="emit('update', $event)"
   >
@@ -29,13 +25,14 @@
           <template #prepend>
             <VCheckbox
               v-if="isGradable"
-              v-model="elementData.correct"
               :error="isValid.value === false"
+              :model-value="elementData.correct"
               :readonly="isDisabled"
               :value="index"
               color="primary"
               hide-details
               multiple
+              @update:model-value="emit('update', { correct: $event })"
             />
             <VAvatar
               v-else
