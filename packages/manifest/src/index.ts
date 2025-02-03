@@ -15,7 +15,6 @@ export const name = 'Multiple Choice';
 export const initState: DataInitializer = (): ElementData => ({
   correct: [],
   embeds: {},
-  question: [],
   answers: ['', '', ''],
   hint: '',
   feedback: {},

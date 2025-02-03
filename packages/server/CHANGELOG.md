@@ -1,5 +1,23 @@
 # @tailor-cms/ce-multiple-choice-server
 
+## 0.0.21
+
+### Patch Changes
+
+- Fixed updating correct answer.
+
+## 0.0.20
+
+### Patch Changes
+
+- Bumped core and lx components packages, removed redundant question prop in data.
+
+## 0.0.19
+
+### Patch Changes
+
+- Updated package to follow new question element component composition.
+
 ## 0.0.18
 
 ### Patch Changes

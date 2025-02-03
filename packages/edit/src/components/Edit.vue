@@ -1,17 +1,8 @@
 <template>
   <QuestionContainer
-    v-bind="{
-      type: manifest.name,
-      icon: manifest.ui.icon,
-      elementData,
-      embedElementConfig,
-      isDirty,
-      isDisabled,
-    }"
+    v-bind="{ elementData, embedElementConfig, isDisabled }"
     show-feedback
-    @cancel="updateData(element.data)"
-    @save="save"
-    @update="updateData($event)"
+    @update="emit('update', $event)"
   >
     <VInput
       v-slot="{ isValid }"
@@ -34,13 +25,14 @@
           <template #prepend>
             <VCheckbox
               v-if="isGradable"
-              v-model="elementData.correct"
               :error="isValid.value === false"
+              :model-value="elementData.correct"
               :readonly="isDisabled"
               :value="index"
               color="primary"
               hide-details
               multiple
+              @update:model-value="emit('update', { correct: $event })"
             />
             <VAvatar
               v-else
@@ -52,7 +44,7 @@
               {{ index + 1 }}
             </VAvatar>
           </template>
-          <template v-if="!isDisabled && answersCount > 2" #append>
+          <template v-if="!isDisabled && answers.length > 2" #append>
             <VBtn
               aria-label="Remove answer"
               color="primary-darken-4"
@@ -83,14 +75,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, defineEmits, defineProps, reactive, watch } from 'vue';
-import manifest, {
-  Element,
-  ElementData,
-} from '@tailor-cms/ce-multiple-choice-manifest';
+import { computed, defineEmits, defineProps } from 'vue';
 import cloneDeep from 'lodash/cloneDeep';
-import isEqual from 'lodash/isEqual';
+import { Element } from '@tailor-cms/ce-multiple-choice-manifest';
 import { QuestionContainer } from '@tailor-cms/core-components';
+import range from 'lodash/range';
+import set from 'lodash/set';
 
 const props = defineProps<{
   element: Element;
@@ -98,13 +88,11 @@ const props = defineProps<{
   isFocused: boolean;
   isDisabled: boolean;
 }>();
-const emit = defineEmits(['save']);
+const emit = defineEmits(['save', 'update']);
 
-const elementData = reactive<ElementData>(cloneDeep(props.element.data));
-
-const isGradable = computed(() => props.element.data.isGradable);
-const answersCount = computed(() => elementData.answers.length);
-const isDirty = computed(() => !isEqual(elementData, props.element.data));
+const elementData = computed(() => props.element.data);
+const isGradable = computed(() => elementData.value.isGradable);
+const answers = computed(() => elementData.value.answers);
 
 const title = computed(() =>
   isGradable.value ? 'Select correct answer(s)' : 'Options',
@@ -123,29 +111,32 @@ const validation = computed(() => ({
     : [],
 }));
 
-const addAnswer = () => elementData.answers.push('');
+const addAnswer = () => emit('update', { answers: [...answers.value, ''] });
+const updateAnswer = (index: number, value: string) => {
+  emit('update', { answers: set(cloneDeep(answers.value), index, value) });
+};
 const removeAnswer = (answerIndex: number) => {
-  elementData.answers.splice(answerIndex, 1);
+  const { answers, correct, feedback } = cloneDeep(elementData.value);
+
+  answers.splice(answerIndex, 1);
 
   if (isGradable.value) {
-    const index = elementData.correct!.indexOf(answerIndex);
-    if (index !== -1) elementData.correct!.splice(index, 1);
-    elementData.correct!.forEach((it, i) => {
-      if (it >= answerIndex && elementData.correct) {
-        elementData.correct[i] = it - 1;
+    const index = correct!.indexOf(answerIndex);
+    if (index !== -1) correct!.splice(index, 1);
+    correct!.forEach((it, i) => {
+      if (it >= answerIndex && correct) {
+        correct[i] = it - 1;
       }
     });
   }
+
+  if (feedback) {
+    range(answerIndex, answers.length).forEach((it) => {
+      feedback[it] = feedback[it + 1];
+    });
+    delete feedback[answers.length];
+  }
+
+  emit('update', { answers, correct, feedback });
 };
-
-const updateAnswer = (index: number, value: string) =>
-  (elementData.answers[index] = value);
-
-const save = () => emit('save', elementData);
-
-const updateData = (data: ElementData) => {
-  Object.assign(elementData, cloneDeep(data));
-};
-
-watch(() => props.element.data, updateData);
 </script>
