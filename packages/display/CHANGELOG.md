@@ -1,5 +1,11 @@
 # @tailor-cms/ce-multiple-choice-display
 
+## 0.0.19
+
+### Patch Changes
+
+- Updated package to follow new question element component composition.
+
 ## 0.0.18
 
 ### Patch Changes
