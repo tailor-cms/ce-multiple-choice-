@@ -1,5 +1,11 @@
 # @tailor-cms/ce-multiple-choice-edit
 
+## 0.0.21
+
+### Patch Changes
+
+- Fixed updating correct answer.
+
 ## 0.0.20
 
 ### Patch Changes
