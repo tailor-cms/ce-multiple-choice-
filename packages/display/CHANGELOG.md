@@ -1,5 +1,11 @@
 # @tailor-cms/ce-multiple-choice-display
 
+## 0.0.22
+
+### Patch Changes
+
+- Bumped core-components package.
+
 ## 0.0.21
 
 ### Patch Changes
