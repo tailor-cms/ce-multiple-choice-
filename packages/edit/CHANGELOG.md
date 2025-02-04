@@ -1,5 +1,11 @@
 # @tailor-cms/ce-multiple-choice-edit
 
+## 0.0.23
+
+### Patch Changes
+
+- Revert to old structutre with question prop.
+
 ## 0.0.22
 
 ### Patch Changes
